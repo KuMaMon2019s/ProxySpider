@@ -1,12 +1,16 @@
-__author__ = 'changchang.cc'
+'''
+谢谢源代码作者, 因本人使用的是python3，因此将此代码做修改
+'''
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
-import urllib2
-import httplib
+import urllib.request
+import http.client
 import threading
 import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
+import importlib
+
+
+importlib.reload(sys)
 
 inFile = open('proxy.txt')
 outFile = open('verified.txt', 'w')
@@ -22,8 +26,8 @@ def getProxyList(targeturl="http://www.xicidaili.com/nn/"):
     for page in range(1, 10):
         url = targeturl + str(page)
         #print url
-        request = urllib2.Request(url, headers=requestHeader)
-        html_doc = urllib2.urlopen(request).read()
+        request = urllib.request.Request(url, headers=requestHeader)
+        html_doc = urllib.request.urlopen(request).read()
     
         soup = BeautifulSoup(html_doc, "html.parser")
         #print soup
@@ -69,15 +73,15 @@ def verifyProxyList():
         port    = line[2]
         
         try:
-            conn = httplib.HTTPConnection(ip, port, timeout=5.0)
+            conn = http.client.HTTPConnection(ip, port, timeout=5.0)
             conn.request(method = 'GET', url = myurl, headers = requestHeader )
             res = conn.getresponse()
             lock.acquire()
-            print "+++Success:" + ip + ":" + port
+            print("+++Success:" + ip + ":" + port)
             outFile.write(ll + "\n")
             lock.release()
         except:
-            print "---Failure:" + ip + ":" + port
+            print("---Failure:" + ip + ":" + port)
         
     
 if __name__ == '__main__':
@@ -85,15 +89,15 @@ if __name__ == '__main__':
     tmp.write("")
     tmp.close()
     proxynum = getProxyList("http://www.xicidaili.com/nn/")
-    print u"国内高匿：" + str(proxynum)
+    print(u"国内高匿：" + str(proxynum))
     proxynum = getProxyList("http://www.xicidaili.com/nt/")
-    print u"国内透明：" + str(proxynum)
+    print(u"国内透明：" + str(proxynum))
     proxynum = getProxyList("http://www.xicidaili.com/wn/")
-    print u"国外高匿：" + str(proxynum)
+    print(u"国外高匿：" + str(proxynum))
     proxynum = getProxyList("http://www.xicidaili.com/wt/")
-    print u"国外透明：" + str(proxynum)
+    print(u"国外透明：" + str(proxynum))
 
-    print u"\n验证代理的有效性："
+    print(u"\n验证代理的有效性：")
     
     all_thread = []
     for i in range(30):
@@ -106,5 +110,4 @@ if __name__ == '__main__':
     
     inFile.close()
     outFile.close()
-    print "All Done."
-
+    print("All Done.")
